@@ -2,16 +2,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Controllers
 {
-    //Endpoint a mesma coisa de uma URL
-    //https://localhost:5051/categories/
+
     [Route("categories")]
     public class CategoryController : ControllerBase
     {
 
+        [HttpGet]
         [Route("")]
-        public string MeuMetodo()
+        public string get()
         {
-            return "Ola Mundo";
+            return "get";
+        }
+
+        [HttpPost]
+        [Route("")]
+        public string Post()
+        {
+            return "Post";
+        }
+
+        [HttpPut]
+        [Route("")]
+        public string Put()
+        {
+            return "Put";
+        }
+
+        [HttpDelete]
+        [Route("")]
+        public string Delete()
+        {
+            return "Delete";
         }
     }
 }
