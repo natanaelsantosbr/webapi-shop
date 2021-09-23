@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shop.Models;
 
 namespace Shop.Controllers
 {
@@ -23,9 +24,13 @@ namespace Shop.Controllers
 
         [HttpPost]
         [Route("")]
-        public string Post()
+        public Category Post([FromBody] Category model)
         {
-            return "Post";
+            /*
+                From Body: Model Bind - lIGAR O JSON COM O C#
+            */
+
+            return model;
         }
 
         [HttpPut]
