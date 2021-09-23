@@ -9,9 +9,16 @@ namespace Shop.Controllers
 
         [HttpGet]
         [Route("")]
-        public string get()
+        public string Get()
         {
             return "get";
+        }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public string GetById(int id)
+        {
+            return $"get {id}";
         }
 
         [HttpPost]
