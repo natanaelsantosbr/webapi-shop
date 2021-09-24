@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shop.Data;
 using Shop.Models;
 
@@ -40,7 +42,7 @@ namespace Shop.Controllers
 
                 return Ok(model);
             }
-            catch (System.Exception)
+            catch
             {
                 return BadRequest(new { message = "Não foi possível criar a categoria" });
             }
@@ -49,7 +51,7 @@ namespace Shop.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<List<Category>>> Put(int id, [FromBody] Category model)
+        public async Task<ActionResult<List<Category>>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
         {
             //Verifica se o ID informado é o mesmo do modelo            
             if (model.Id != id)
@@ -59,7 +61,20 @@ namespace Shop.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(model);
+            try
+            {
+                context.Entry<Category>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return Ok(model);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest(new { message = "Este registro ja foi atualizado" });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível atualizar a categoria" });
+            }
         }
 
 
