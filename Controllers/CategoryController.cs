@@ -80,8 +80,27 @@ namespace Shop.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<ActionResult<List<Category>>> Delete(int id)
+        public async Task<ActionResult<List<Category>>> Delete(int id,
+        [FromServices] DataContext context)
         {
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (category == null)
+                return BadRequest(new { message = "Categoria nao encontrada" });
+
+            try
+            {
+                context.Remove(category);
+                await context.SaveChangesAsync();
+                return Ok(category);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Naoi foi possivel remover uma categoria" });
+            }
+
+
+
             return Ok();
         }
     }
