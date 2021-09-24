@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Shop.Data;
 
 namespace Shop
 {
@@ -29,10 +31,12 @@ namespace Shop
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop", Version = "v1" });
-            });
+            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+
+            //AddTransient vai me trazer um novo DataContext
+            //AddSingleton = Criar uma DataContext por aplicação (todos usam)
+            //Garantir um DataContext por uma requisição
+            services.AddScoped<DataContext, DataContext>();
         }
 
         /*
@@ -47,8 +51,6 @@ namespace Shop
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop v1"));
             }
 
             //Força a api para https
