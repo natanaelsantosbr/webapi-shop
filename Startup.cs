@@ -1,9 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shop.Data;
 
@@ -31,6 +34,29 @@ namespace Shop
         {
 
             services.AddControllers();
+
+            //Gerar um chave Simetrica
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+
+            //Adicionar a autenticação
+            services.AddAuthentication(
+                    x =>
+                    {
+                        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; //
+                        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; //
+                    }
+            ).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
+            });
 
             //EF em Memoria
             //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
@@ -74,6 +100,7 @@ namespace Shop
             app.UseRouting();
 
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             //Mapeamento dos endpoint
