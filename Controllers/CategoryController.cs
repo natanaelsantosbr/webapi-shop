@@ -15,16 +15,23 @@ namespace Shop.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<List<Category>>> Get()
+        public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
-            return new List<Category>();
+            var category = await context.Categories.AsNoTracking().ToListAsync();
+            return Ok(category);
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category>> GetById(int id)
+        public async Task<ActionResult<Category>> GetById(int id,
+        [FromServices] DataContext context)
         {
-            return new Category(); ;
+            /*
+            AsNoTracking = Pega os dados puros ou seja ele nao cria um proxy da categoria (Versao de atualizacao, criacao, deleção que eh de uso exclusivo do EF)
+            */
+            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+            return Ok(category);
         }
 
         [HttpPost]
@@ -94,14 +101,10 @@ namespace Shop.Controllers
                 await context.SaveChangesAsync();
                 return Ok(category);
             }
-            catch (Exception)
+            catch
             {
-                return BadRequest(new { message = "Naoi foi possivel remover uma categoria" });
+                return BadRequest(new { message = "Nao foi possivel remover uma categoria" });
             }
-
-
-
-            return Ok();
         }
     }
 }
