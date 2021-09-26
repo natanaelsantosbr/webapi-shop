@@ -1,4 +1,5 @@
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,5 +24,31 @@ namespace Shop.Controllers
             return Ok(products);
         }
 
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Product>> Get([FromServices] DataContext context, int id)
+        {
+            var produt = await context
+                    .Products
+                    .Include(x => x.Category)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+            return Ok(produt);
+        }
+
+        [HttpGet]
+        [Route("categories/{id:int}")]
+        public async Task<ActionResult<Product>> GetByCategory([FromServices] DataContext context, int id)
+        {
+            var product = await context
+                    .Products
+                    .Include(x => x.Category)
+                    .AsNoTracking()
+                    .Where(x => x.CategoryId == id)
+                    .ToListAsync();
+
+            return Ok(product);
+        }
     }
 }
