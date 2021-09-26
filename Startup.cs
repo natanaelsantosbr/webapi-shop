@@ -31,7 +31,21 @@ namespace Shop
         {
 
             services.AddControllers();
-            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+
+            //EF em Memoria
+            //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+
+            //EF no SQL Server
+            services.AddDbContext<DataContext>(
+                opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))
+            );
+
+
+
+
+
+
+
 
             //AddTransient vai me trazer um novo DataContext
             //AddSingleton = Criar uma DataContext por aplicação (todos usam)
