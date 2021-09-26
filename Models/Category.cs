@@ -6,8 +6,9 @@ namespace Shop.Models
     /*[Table("Categoria")]*/
     public class Category
     {
-        [Key]
         //[Column("CATEGORIA_ID")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Este campo e obrigatorio")]

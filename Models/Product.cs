@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shop.Models
 {
@@ -6,6 +7,7 @@ namespace Shop.Models
     {
 
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(60, ErrorMessage = "Este campo deve conter entre 3 e 60 caracteres")]

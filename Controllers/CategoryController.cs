@@ -49,9 +49,9 @@ namespace Shop.Controllers
 
                 return Ok(model);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Não foi possível criar a categoria" });
+                return BadRequest(new { message = $"Não foi possível criar a categoria {ex.Message}" });
             }
 
         }
