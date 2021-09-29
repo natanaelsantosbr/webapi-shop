@@ -34,6 +34,8 @@ namespace Shop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
@@ -85,6 +87,11 @@ namespace Shop
             //AddSingleton = Criar uma DataContext por aplicação (todos usam)
             //Garantir um DataContext por uma requisição
             services.AddScoped<DataContext, DataContext>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop Api", Version = "v1" });
+            });
         }
 
         /*
@@ -104,9 +111,21 @@ namespace Shop
             //Força a api para https
             app.UseHttpsRedirection();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+           {
+               c.SwaggerEndpoint("/swagger/v1/swagger.json", "SHOP API V1");
+           });
+
+
+
             //Usar o padrão de rota do mvc
             app.UseRouting();
 
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
