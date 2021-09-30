@@ -10,7 +10,7 @@ using Shop.Services;
 
 namespace Shop.Controllers
 {
-    [Route("users")]
+    [Route("v1/users")]
     public class UserController : Controller
     {
         [HttpGet]
@@ -35,8 +35,11 @@ namespace Shop.Controllers
 
             try
             {
+                model.Role = "employee";
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
+
+                model.Password = "";
                 return Ok(model);
             }
             catch (Exception)
@@ -81,6 +84,8 @@ namespace Shop.Controllers
                 return NotFound(new { message = "Usuario ou senha invalidos" });
 
             var token = TokenService.GenerateToken(user);
+
+            user.Password = "";
 
             return new
             {

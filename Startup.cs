@@ -69,24 +69,17 @@ namespace Shop
             });
 
             //EF em Memoria
-            //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
+            services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("DataBase"));
 
             //EF no SQL Server
-            services.AddDbContext<DataContext>(
-                opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))
-            );
-
-
-
-
-
-
-
+            // services.AddDbContext<DataContext>(
+            //     opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString"))
+            // );
 
             //AddTransient vai me trazer um novo DataContext
             //AddSingleton = Criar uma DataContext por aplicação (todos usam)
             //Garantir um DataContext por uma requisição
-            services.AddScoped<DataContext, DataContext>();
+            //services.AddScoped<DataContext, DataContext>();
 
             services.AddSwaggerGen(c =>
             {
